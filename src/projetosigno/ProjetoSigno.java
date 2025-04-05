@@ -1,6 +1,6 @@
 package projetosigno;
 
-import java.util.Calendar;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -12,53 +12,80 @@ import java.util.Scanner;
  * número da sorte e a cor da sorte.
  */
 public class ProjetoSigno {
-
+    private static CalcularIdade calcular;
+    private static Signos signos;
+    private static InfoPersonalizada info;
+    private static int sexo = 0;
+    private static String nome, dataNascimento, tratar;
+    
     public static void main(String[] args) {
         //importações
-
-        Scanner ler = new Scanner(System.in);
-        Calendar hoje = Calendar.getInstance();
-
-        // Declaração de variáveis
-        int diaAtual = hoje.get(Calendar.DATE);
-        int mesAtual = hoje.get(Calendar.MONTH) + 1;
-        int anoAtual = hoje.get(Calendar.YEAR);
-        String nome, signo, corSorte, trata, trata2;
-        int sexo, diaNascimento, mesNascimento, anoNascimento, numeroSorte;
-
+        Scanner ler = new Scanner(System.in);       
+        
         //Saída de dados
-        System.out.println("Digite seu nome:");
+        System.out.print("Digite seu nome: ");
         nome = ler.nextLine();
         //Processamento
         if (nome.length() < 8) {
 
             //Saída de dados
             System.out.println("Seu nome deve ter mais de 8 caracteres");
-
-            //Processamento
-        } else {
-
-            //Saída de dados
-            System.out.println("Digite seu sexo(1 para feminino e 2 para masculino):");
-            sexo = ler.nextInt();
-
-            //Processamento
-            if (sexo == 1) {
-                trata = "Sra.";
-            } else {
-                trata = "Sr.";
-            }
-            //Saída de dados
-            System.out.println("Digite o dia da sua data de nascimento:");
-            diaNascimento = ler.nextInt();
-            System.out.println("Digite o mês da sua data de nascimento(escreva de 1 a 12):");
-            mesNascimento = ler.nextInt();
-            //Processamento
-            if (diaNascimento >= 1 && diaNascimento <= 31) {
-
-                //Saída de dados
-            }
+            // Para a execução e sai.
+            System.exit(0);
         }
+        
+        //Saída de dados
+        System.out.print("Digite seu sexo::\n"
+                + "[ 1 ] para feminino\n"
+                + "[ 2 ] para masculino\n"
+                + ">>> ");
+        // Uso da exceção para garantir que o valor de entrada seja um inteiro.
+        try {
+            sexo = ler.nextInt();
+        }catch(InputMismatchException e){
+            System.out.println("ERRO: "+e);
+            System.out.println("Digite um número (1 ou 2)");
+            System.exit(0);
+        } 
+        catch (Exception e) {
+            System.out.println(e);
+            System.exit(0);
+        }
+
+        //Processamento
+        switch (sexo) {
+            case 1:
+                tratar = "Sra.";
+                break;
+            case 2:
+                tratar = "Sr.";
+                break;
+            default:
+                System.out.println("Opção inválida\nEncerrando o programa");
+                System.exit(0);
+        }
+            
+            //Saída de dados
+            ler.nextLine();
+            
+            // A variável dataNascimento, espera receber uma String no formado
+            // onde a separação entre dia, mês e ano, seja por um '/' ou seja
+            // dia/mes/ano ex: 13/12/1980.
+            System.out.print("Digite a sua data de nascimento:"
+                    + "(Ex:: 15/02/2010)\n>>> ");
+            dataNascimento = ler.next();
+
+            System.out.println("\nOlá "+tratar+" "+nome);
+            
+            calcular = new CalcularIdade(dataNascimento);
+            System.out.println(tratar+" tem "
+                    +calcular.extrairIdade()+" anos de idade.");
+            
+            signos = new Signos(calcular);
+            System.out.println("Signo: "+signos.procurarSigno());
+            
+            info = new InfoPersonalizada(calcular, nome);
+            System.out.println("Seu número da sorte: "+info.numeroDaSorte());
+            System.out.println("Sua cor da sorte: "+info.corDaSorte());      
     }
 }
-//Ainda Não Finalizado!
